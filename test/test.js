@@ -1,13 +1,12 @@
-var remark = require('remark')
-var VFile = require('vfile')
-var path = require('path')
-var tap = require('tap')
-var fs = require('fs')
+const path = require('path')
+const tap = require('tap')
+const remark = require('remark')
+const VFile = require('to-vfile')
 
-var include = require('../index')
-var processor = remark().use(include)
+const include = require('../index')
+const processor = remark().use(include)
 
-var map = {
+const map = {
   '@include a.md': '# A',
   '@include a': '# A',
   '@include b': '# B',
@@ -21,16 +20,13 @@ function transform (lines) {
     .join('\n\n') + '\n'
 }
 
-function loadFile (filePath) {
-  var fullpath = path.join(__dirname, filePath)
-  return new VFile({
-    path: fullpath,
-    contents: fs.readFileSync(fullpath).toString()
-  })
+function loadFile (file) {
+  return VFile.readSync(path.join(__dirname, file))
 }
 
+
 tap.test('should include by exact path', function (t) {
-  var file = loadFile('exact.md')
+  const file = loadFile('exact.md')
   t.equal(
     processor.processSync(file).toString(),
     transform(file.contents.split('\n'))
@@ -39,7 +35,7 @@ tap.test('should include by exact path', function (t) {
 })
 
 tap.test('should include by guessing extension', function (t) {
-  var file = loadFile('guess.md')
+  const file = loadFile('guess.md')
   t.equal(
     processor.processSync(file).toString(),
     transform(file.contents.split('\n'))
@@ -48,7 +44,7 @@ tap.test('should include by guessing extension', function (t) {
 })
 
 tap.test('should include from sub and super paths', function (t) {
-  var file = loadFile('super.md')
+  const file = loadFile('super.md')
   t.equal(
     processor.processSync(file).toString(),
     transform(file.contents.split('\n'))
