@@ -21,34 +21,28 @@ function transform (lines) {
 }
 
 function loadFile (file) {
-  return VFile.readSync(path.join(__dirname, file))
+  return VFile.readSync(path.join(__dirname, file), {encoding: "utf-8"})
 }
 
 
 tap.test('should include by exact path', function (t) {
   const file = loadFile('exact.md')
-  t.equal(
-    processor.processSync(file).toString(),
-    transform(file.contents.split('\n'))
-  )
+  var expected = transform(file.contents.split('\n'))
+  t.equal(processor.processSync(file).toString(), expected)
   t.end()
 })
 
 tap.test('should include by guessing extension', function (t) {
   const file = loadFile('guess.md')
-  t.equal(
-    processor.processSync(file).toString(),
-    transform(file.contents.split('\n'))
-  )
+  const expected = transform(file.contents.split('\n'))
+  t.equal(processor.processSync(file).toString(), expected)
   t.end()
 })
 
 tap.test('should include from sub and super paths', function (t) {
   const file = loadFile('super.md')
-  t.equal(
-    processor.processSync(file).toString(),
-    transform(file.contents.split('\n'))
-  )
+  const expected = transform(file.contents.split('\n'))
+  t.equal(processor.processSync(file).toString(), expected)
   t.end()
 })
 
